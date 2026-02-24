@@ -1,9 +1,9 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, CheckCircle2, Sparkles, X } from "lucide-react";
+import { Plus, CheckCircle2, Sparkles } from "lucide-react";
 
 import { useTasks } from "@/hooks/useTasks";
-import type { Task, TaskFilter } from "@/types/task";
+import type { TaskFilter } from "@/types/task";
 
 import { Button } from "@/components/ui/button";
 import { StatsHeader } from "@/components/task/StatsHeader";
@@ -47,7 +47,7 @@ function App() {
 
   /* ---------------- UI STATE ---------------- */
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [editingTask, setEditingTask] = useState<any>(null);
 
   /* ---------------- FORM STATE ---------------- */
   const [title, setTitle] = useState("");
@@ -152,7 +152,7 @@ function App() {
     cancelForm();
   };
 
-  const startEdit = (task: Task) => {
+  const startEdit = (task: any) => {
     setEditingTask(task);
     setTitle(task.title);
     setDescription(task.description);
@@ -171,10 +171,6 @@ function App() {
       category: "",
       search: "",
     });
-
-  /* ================================================= */
-  /* ===================== UI ======================== */
-  /* ================================================= */
 
   return (
     <div className="min-h-screen bg-slate-50">
