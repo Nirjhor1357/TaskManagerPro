@@ -28,8 +28,6 @@ import {
 function App() {
   const {
     tasks,
-    addTask,
-    updateTask,
     deleteTask,
     toggleTaskStatus,
     getStats,
@@ -48,15 +46,6 @@ function App() {
   /* ---------------- UI STATE ---------------- */
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
-
-  /* ---------------- FORM STATE ---------------- */
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] =
-    useState<"low" | "medium" | "high">("medium");
-  const [status, setStatus] =
-    useState<"todo" | "in-progress" | "done">("todo");
-  const [dueDate, setDueDate] = useState("");
 
   const stats = getStats();
 
@@ -96,71 +85,6 @@ function App() {
     reorderTasks(newTasks);
   };
 
-  /* ---------------- HELPERS ---------------- */
-  const resetForm = () => {
-    setTitle("");
-    setDescription("");
-    setPriority("medium");
-    setStatus("todo");
-    setDueDate(
-      new Date(Date.now() + 86400000)
-        .toISOString()
-        .split("T")[0]
-    );
-  };
-
-  const cancelForm = () => {
-    setShowAddForm(false);
-    setEditingTask(null);
-    resetForm();
-  };
-
-  /* ---------------- ADD ---------------- */
-  const handleAddTask = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
-
-    addTask({
-      title: title.trim(),
-      description: description.trim(),
-      priority,
-      status,
-      dueDate:
-        dueDate ||
-        new Date(Date.now() + 86400000)
-          .toISOString()
-          .split("T")[0],
-      category: "",
-    });
-
-    cancelForm();
-  };
-
-  /* ---------------- EDIT ---------------- */
-  const handleEditTask = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingTask || !title.trim()) return;
-
-    updateTask(editingTask.id, {
-      title: title.trim(),
-      description: description.trim(),
-      priority,
-      status,
-      dueDate: dueDate || editingTask.dueDate,
-    });
-
-    cancelForm();
-  };
-
-  const startEdit = (task: any) => {
-    setEditingTask(task);
-    setTitle(task.title);
-    setDescription(task.description);
-    setPriority(task.priority);
-    setStatus(task.status);
-    setDueDate(task.dueDate);
-  };
-
   const handleDeleteTask = (id: string) => deleteTask(id);
   const handleToggleStatus = (id: string) => toggleTaskStatus(id);
 
@@ -188,10 +112,7 @@ function App() {
 
           {!showAddForm && !editingTask && (
             <Button
-              onClick={() => {
-                resetForm();
-                setShowAddForm(true);
-              }}
+              onClick={() => setShowAddForm(true)}
               className="bg-slate-900 hover:bg-slate-800 text-white"
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -227,7 +148,7 @@ function App() {
                           key={task.id}
                           task={task}
                           onToggle={handleToggleStatus}
-                          onEdit={startEdit}
+                          onEdit={setEditingTask}
                           onDelete={handleDeleteTask}
                           updateTaskTitle={updateTaskTitle}
                         />
