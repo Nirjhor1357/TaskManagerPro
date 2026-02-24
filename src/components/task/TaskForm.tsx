@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Task, TaskPriority, TaskStatus } from "@/types/task";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+
+const getDefaultDueDate = () =>
+  new Date(Date.now() + 86400000).toISOString().split("T")[0];
 
 interface TaskFormProps {
   isOpen: boolean;
@@ -21,28 +24,22 @@ export const TaskForm = ({
   categories = [],
 }: TaskFormProps) => {
   /* ---------------- STATE ---------------- */
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<TaskPriority>("medium");
-  const [status, setStatus] = useState<TaskStatus>("todo");
-  const [dueDate, setDueDate] = useState("");
-  const [category, setCategory] = useState("");
+  const [title, setTitle] = useState(editTask?.title ?? "");
+  const [description, setDescription] = useState(
+    editTask?.description ?? ""
+  );
+  const [priority, setPriority] = useState<TaskPriority>(
+    editTask?.priority ?? "medium"
+  );
+  const [status, setStatus] = useState<TaskStatus>(
+    editTask?.status ?? "todo"
+  );
+  const [dueDate, setDueDate] = useState(
+    () => editTask?.dueDate ?? getDefaultDueDate()
+  );
+  const [category, setCategory] = useState(editTask?.category ?? "");
 
   const isEditing = !!editTask;
-
-  /* ---------------- EFFECT ---------------- */
-  useEffect(() => {
-    if (editTask) {
-      setTitle(editTask.title);
-      setDescription(editTask.description);
-      setPriority(editTask.priority);
-      setStatus(editTask.status);
-      setDueDate(editTask.dueDate);
-      setCategory(editTask.category || "");
-    } else {
-      resetForm();
-    }
-  }, [editTask, isOpen]);
 
   /* ---------------- HELPERS ---------------- */
   const resetForm = () => {
@@ -50,9 +47,7 @@ export const TaskForm = ({
     setDescription("");
     setPriority("medium");
     setStatus("todo");
-    setDueDate(
-      new Date(Date.now() + 86400000).toISOString().split("T")[0]
-    );
+    setDueDate(getDefaultDueDate());
     setCategory("");
   };
 

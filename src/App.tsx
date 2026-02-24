@@ -36,6 +36,7 @@ function App() {
     reorderTasks,
     updateTaskTitle,
     updateTask,
+    getCategories,
   } = useTasks();
 
   /* ---------------- FILTER STATE ---------------- */
@@ -152,13 +153,14 @@ function App() {
 
         {/* ✅ FIXED TASK FORM */}
         <TaskForm
+          key={`${editingTask?.id ?? "new"}-${
+            showAddForm ? "open" : "closed"
+          }`}
           isOpen={showAddForm}
-          onClose={() => setShowAddForm(false)}
-          onSubmit={(data) => {
-            addTask(data);
-            setShowAddForm(false);
-          }}
-          categories={[]}
+          onClose={handleFormClose}
+          onSubmit={handleFormSubmit}
+          editTask={editingTask}
+          categories={getCategories()}
         />
 
         <div className="mt-6 space-y-4">
