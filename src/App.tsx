@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, CheckCircle2, Sparkles } from "lucide-react";
 
 import { useTasks } from "@/hooks/useTasks";
-import type { TaskFilter } from "@/types/task";
+import type { TaskFilter, Task } from "@/types/task";
 
 import { Button } from "@/components/ui/button";
 import { StatsHeader } from "@/components/task/StatsHeader";
 import { EmptyState } from "@/components/task/EmptyState";
 import { SortableTaskItem } from "@/components/task/SortableTaskItem";
+import { TaskForm } from "@/components/task/TaskForm";
 
 import "./App.css";
 
@@ -28,11 +29,13 @@ import {
 function App() {
   const {
     tasks,
+    addTask,
     deleteTask,
     toggleTaskStatus,
     getStats,
     reorderTasks,
     updateTaskTitle,
+    updateTask,
   } = useTasks();
 
   /* ---------------- FILTER STATE ---------------- */
@@ -45,7 +48,7 @@ function App() {
 
   /* ---------------- UI STATE ---------------- */
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingTask, setEditingTask] = useState<any>(null);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const stats = getStats();
 
@@ -85,6 +88,7 @@ function App() {
     reorderTasks(newTasks);
   };
 
+  /* ---------------- TASK ACTIONS ---------------- */
   const handleDeleteTask = (id: string) => deleteTask(id);
   const handleToggleStatus = (id: string) => toggleTaskStatus(id);
 
@@ -95,6 +99,25 @@ function App() {
       category: "",
       search: "",
     });
+
+  /* ================= FORM HANDLERS ================= */
+
+  const handleFormSubmit = (data: Omit<Task, "id" | "createdAt">) => {
+    if (editingTask) {
+      updateTask(editingTask.id, data);
+      setEditingTask(null);
+    } else {
+      addTask(data);
+    }
+    setShowAddForm(false);
+  };
+
+  const handleFormClose = () => {
+    setShowAddForm(false);
+    setEditingTask(null);
+  };
+
+  /* ================================================= */
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -110,15 +133,16 @@ function App() {
             </h1>
           </div>
 
-          {!showAddForm && !editingTask && (
-            <Button
-              onClick={() => setShowAddForm(true)}
-              className="bg-slate-900 hover:bg-slate-800 text-white"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              New Task
-            </Button>
-          )}
+          <Button
+            onClick={() => {
+              setEditingTask(null);
+              setShowAddForm(true);
+            }}
+            className="bg-slate-900 hover:bg-slate-800 text-white"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Task
+          </Button>
         </div>
       </header>
 
@@ -126,50 +150,62 @@ function App() {
       <main className="max-w-5xl mx-auto px-4 py-8">
         <StatsHeader stats={stats} />
 
-        {!showAddForm && !editingTask && (
-          <div className="mt-6 space-y-4">
-            <h2 className="text-lg font-semibold text-slate-900">
-              Tasks ({filteredTasks.length})
-            </h2>
+        {/* ✅ FIXED TASK FORM */}
+        <TaskForm
+          isOpen={showAddForm}
+          onClose={() => setShowAddForm(false)}
+          onSubmit={(data) => {
+            addTask(data);
+            setShowAddForm(false);
+          }}
+          categories={[]}
+        />
 
-            <AnimatePresence mode="popLayout">
-              {filteredTasks.length > 0 ? (
-                <DndContext
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd}
+        <div className="mt-6 space-y-4">
+          <h2 className="text-lg font-semibold text-slate-900">
+            Tasks ({filteredTasks.length})
+          </h2>
+
+          <AnimatePresence mode="popLayout">
+            {filteredTasks.length > 0 ? (
+              <DndContext
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={filteredTasks.map((t) => t.id)}
+                  strategy={verticalListSortingStrategy}
                 >
-                  <SortableContext
-                    items={filteredTasks.map((t) => t.id)}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    <motion.div layout className="grid gap-3">
-                      {filteredTasks.map((task) => (
-                        <SortableTaskItem
-                          key={task.id}
-                          task={task}
-                          onToggle={handleToggleStatus}
-                          onEdit={setEditingTask}
-                          onDelete={handleDeleteTask}
-                          updateTaskTitle={updateTaskTitle}
-                        />
-                      ))}
-                    </motion.div>
-                  </SortableContext>
-                </DndContext>
-              ) : tasks.length === 0 ? (
-                <EmptyState
-                  type="no-tasks"
-                  onCreateClick={() => setShowAddForm(true)}
-                />
-              ) : (
-                <EmptyState
-                  type="no-results"
-                  onClearFilters={clearFilters}
-                />
-              )}
-            </AnimatePresence>
-          </div>
-        )}
+                  <motion.div layout className="grid gap-3">
+                    {filteredTasks.map((task) => (
+                      <SortableTaskItem
+                        key={task.id}
+                        task={task}
+                        onToggle={handleToggleStatus}
+                        onDelete={handleDeleteTask}
+                        onEdit={(t) => {
+                          setEditingTask(t);
+                          setShowAddForm(true);
+                        }}
+                        updateTaskTitle={updateTaskTitle}
+                      />
+                    ))}
+                  </motion.div>
+                </SortableContext>
+              </DndContext>
+            ) : tasks.length === 0 ? (
+              <EmptyState
+                type="no-tasks"
+                onCreateClick={() => setShowAddForm(true)}
+              />
+            ) : (
+              <EmptyState
+                type="no-results"
+                onClearFilters={clearFilters}
+              />
+            )}
+          </AnimatePresence>
+        </div>
       </main>
 
       {/* FOOTER */}

@@ -1,28 +1,36 @@
-import { useState, useEffect } from 'react';
-import type { Task, TaskPriority, TaskStatus } from '@/types/task';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { useState, useEffect } from "react";
+import type { Task, TaskPriority, TaskStatus } from "@/types/task";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface TaskFormProps {
   isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (task: Omit<Task, 'id' | 'createdAt'>) => void;
+  onClose: () => void; // ✅ unified name (IMPORTANT)
+  onSubmit: (task: Omit<Task, "id" | "createdAt">) => void;
   editTask?: Task | null;
-  categories: string[];
+  categories?: string[];
 }
 
-export const TaskForm = ({ isOpen, onClose, onSubmit, editTask, categories }: TaskFormProps) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState<TaskPriority>('medium');
-  const [status, setStatus] = useState<TaskStatus>('todo');
-  const [dueDate, setDueDate] = useState('');
-  const [category, setCategory] = useState('');
+export const TaskForm = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  editTask,
+  categories = [],
+}: TaskFormProps) => {
+  /* ---------------- STATE ---------------- */
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState<TaskPriority>("medium");
+  const [status, setStatus] = useState<TaskStatus>("todo");
+  const [dueDate, setDueDate] = useState("");
+  const [category, setCategory] = useState("");
 
   const isEditing = !!editTask;
 
+  /* ---------------- EFFECT ---------------- */
   useEffect(() => {
     if (editTask) {
       setTitle(editTask.title);
@@ -30,21 +38,25 @@ export const TaskForm = ({ isOpen, onClose, onSubmit, editTask, categories }: Ta
       setPriority(editTask.priority);
       setStatus(editTask.status);
       setDueDate(editTask.dueDate);
-      setCategory(editTask.category);
+      setCategory(editTask.category || "");
     } else {
       resetForm();
     }
   }, [editTask, isOpen]);
 
+  /* ---------------- HELPERS ---------------- */
   const resetForm = () => {
-    setTitle('');
-    setDescription('');
-    setPriority('medium');
-    setStatus('todo');
-    setDueDate(new Date(Date.now() + 86400000).toISOString().split('T')[0]);
-    setCategory('');
+    setTitle("");
+    setDescription("");
+    setPriority("medium");
+    setStatus("todo");
+    setDueDate(
+      new Date(Date.now() + 86400000).toISOString().split("T")[0]
+    );
+    setCategory("");
   };
 
+  /* ---------------- SUBMIT ---------------- */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
@@ -58,23 +70,33 @@ export const TaskForm = ({ isOpen, onClose, onSubmit, editTask, categories }: Ta
       category,
     });
 
-    if (!isEditing) {
-      resetForm();
-    }
-    onClose();
+    if (!isEditing) resetForm();
+    onClose(); // ✅ close after submit
   };
 
+  /* ---------------- GUARD ---------------- */
   if (!isOpen) return null;
 
+  /* ================================================= */
+  /* ===================== UI ======================== */
+  /* ================================================= */
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-lg max-h-[90vh] overflow-auto">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      onClick={onClose} // ✅ click outside closes
+    >
+      <div
+        className="bg-white rounded-xl w-full max-w-lg max-h-[90vh] overflow-auto"
+        onClick={(e) => e.stopPropagation()} // ✅ prevent inner click close
+      >
         <div className="p-6">
           <h2 className="text-xl font-semibold text-slate-900 mb-6">
-            {isEditing ? 'Edit Task' : 'Create New Task'}
+            {isEditing ? "Edit Task" : "Create New Task"}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Title */}
             <div className="space-y-2">
               <Label htmlFor="title">Task Title</Label>
               <Input
@@ -87,6 +109,7 @@ export const TaskForm = ({ isOpen, onClose, onSubmit, editTask, categories }: Ta
               />
             </div>
 
+            {/* Description */}
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
@@ -98,12 +121,15 @@ export const TaskForm = ({ isOpen, onClose, onSubmit, editTask, categories }: Ta
               />
             </div>
 
+            {/* Priority + Status */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Priority</Label>
                 <select
                   value={priority}
-                  onChange={(e) => setPriority(e.target.value as TaskPriority)}
+                  onChange={(e) =>
+                    setPriority(e.target.value as TaskPriority)
+                  }
                   className="w-full h-11 px-3 rounded-md border border-slate-200 bg-white"
                 >
                   <option value="low">Low</option>
@@ -116,7 +142,9 @@ export const TaskForm = ({ isOpen, onClose, onSubmit, editTask, categories }: Ta
                 <Label>Status</Label>
                 <select
                   value={status}
-                  onChange={(e) => setStatus(e.target.value as TaskStatus)}
+                  onChange={(e) =>
+                    setStatus(e.target.value as TaskStatus)
+                  }
                   className="w-full h-11 px-3 rounded-md border border-slate-200 bg-white"
                 >
                   <option value="todo">To Do</option>
@@ -126,6 +154,7 @@ export const TaskForm = ({ isOpen, onClose, onSubmit, editTask, categories }: Ta
               </div>
             </div>
 
+            {/* Due Date + Category */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="dueDate">Due Date</Label>
@@ -147,22 +176,31 @@ export const TaskForm = ({ isOpen, onClose, onSubmit, editTask, categories }: Ta
                 >
                   <option value="">No Category</option>
                   {categories.map((cat) => (
-                    <option key={cat} value={cat}>{cat}</option>
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
 
+            {/* Actions */}
             <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-              <Button type="button" variant="outline" onClick={onClose} className="h-11 px-6">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                className="h-11 px-6"
+              >
                 Cancel
               </Button>
+
               <Button
                 type="submit"
                 disabled={!title.trim()}
                 className="h-11 px-6 bg-slate-900 hover:bg-slate-800 text-white"
               >
-                {isEditing ? 'Save Changes' : 'Create Task'}
+                {isEditing ? "Save Changes" : "Create Task"}
               </Button>
             </div>
           </form>
