@@ -1,73 +1,133 @@
-# React + TypeScript + Vite
+# 🚀 Task Manager Pro
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive task management web app built with **React + TypeScript** featuring drag-and-drop reordering, inline editing, smart due dates, and a beautiful UI.
 
-Currently, two official plugins are available:
+🔗 **Live Demo:** https://nowshinnirjhor.me/taskmanager
+💻 **Source Code:** https://github.com/Nirjhor1357/TaskManagerPro
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* ✅ Create, edit, and delete tasks
+* 🔄 Drag-and-drop task reordering (DnD Kit)
+* ⚡ Inline quick edit for task titles
+* 🎯 Priority levels (Low / Medium / High)
+* 📅 Smart due date indicators (Today / Tomorrow / Overdue)
+* 🔍 Search and filter tasks
+* 💾 LocalStorage persistence
+* 🎨 Smooth animations with Framer Motion
+* 📱 Fully responsive design
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧱 Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Frontend**
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Libraries**
+
+* @dnd-kit/core
+* @dnd-kit/sortable
+* Framer Motion
+* date-fns
+* lucide-react
+
+---
+
+## 📸 Screenshots
+
+> *(Add your screenshots here for maximum portfolio impact)*
+
+Example:
+
+```md
+![Dashboard](./screenshots/dashboard.png)
+![Drag and Drop](./screenshots/drag.png)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 Getting Started
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1️⃣ Clone the repository
+
+```bash
+git clone https://github.com/Nirjhor1357/TaskManagerPro.git
+cd TaskManagerPro/app
 ```
+
+### 2️⃣ Install dependencies
+
+```bash
+npm install
+```
+
+### 3️⃣ Run development server
+
+```bash
+npm run dev
+```
+
+App will run at:
+
+```
+http://localhost:5173
+```
+
+---
+
+## 🏗️ Build for production
+
+```bash
+npm run build
+npm run preview
+```
+
+---
+
+## 🌐 Deployment
+
+The app is deployed on **Vercel** and served under a subpath:
+
+```
+https://nowshinnirjhor.me/taskmanager
+```
+
+---
+
+## 🧠 What I Learned
+
+* Implementing drag-and-drop with DnD Kit
+* Managing complex React state with custom hooks
+* Type-safe architecture using TypeScript
+* Handling subpath deployment in Vite
+* Building clean, reusable UI components
+
+---
+
+## 🔮 Future Improvements
+
+* [ ] Dark mode
+* [ ] Task categories with colors
+* [ ] Cloud sync (Firebase/Supabase)
+* [ ] Mobile swipe gestures
+* [ ] Due date notifications
+
+---
+
+## 👨‍💻 Author
+
+**Nirjhor**
+
+* 🌐 Portfolio: https://nowshinnirjhor.me
+* 💻 GitHub: https://github.com/Nirjhor1357
+
+---
+
+⭐ If you like this project, consider giving it a star!
