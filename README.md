@@ -40,16 +40,11 @@ A modern, responsive task management web app built with **React + TypeScript** f
 
 ---
 
-## 📸 Screenshots
+## 🖼️ Screenshots
 
-> *(Add your screenshots here for maximum portfolio impact)*
-
-Example:
-
-```md
 ![Dashboard](./screenshots/dashboard.png)
 ![Drag and Drop](./screenshots/drag.png)
-```
+![Inline Edit](./screenshots/edit.png)
 
 ---
 
