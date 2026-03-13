@@ -2,7 +2,7 @@
 
 A modern, responsive task management web app built with **React + TypeScript** featuring drag-and-drop reordering, inline editing, smart due dates, and a beautiful UI.
 
-🔗 **Live Demo:** https://nowshinnirjhor.me/taskmanager
+🔗 **Live Demo:** https://nowshinnirjhor.me/taskmanager <br>
 💻 **Source Code:** https://github.com/Nirjhor1357/TaskManagerPro
 
 ---
